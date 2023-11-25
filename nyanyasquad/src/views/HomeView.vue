@@ -1,29 +1,56 @@
 <template>
   <div class="home">
-<<<<<<< HEAD
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-=======
     <h1>Home</h1>
->>>>>>> origin/main
+    <span v-if="userIsLoggedIn" >{{ user_data }}</span>
+    <button v-if="userIsLoggedIn" @click="logout">Log out</button>
   </div>
 </template>
 
 <script lang="ts">
-<<<<<<< HEAD
-import { Options, Vue } from 'vue-class-component';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import axios from "axios";
+import { defineComponent } from 'vue';
 
-@Options({
-  components: {
-    HelloWorld,
+export default defineComponent({
+  name: 'HomeView',
+  props: {
+    store: Object
   },
-})
-export default class HomeView extends Vue {}
-=======
-export default {
-  name: 'Home',
-}
+  data(){
+    return{
+      user_data: '' as string
+    }
+  },
+  computed: {
+    userIsLoggedIn(): boolean {
+      return !!localStorage.getItem('access');
+    }
+  },
+  mounted() {
+    this.getMe()
+  },
+  methods:{
+    getMe(): void {
+      axios
+          .get("api/v1/users/me")
+          .then(response => {
+            console.log(response)
+            this.user_data = response.data.username
+          })
+          .catch(error => {
+            console.log(error)
+          })
+    },
+    logout(): void {
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
 
->>>>>>> origin/main
+      if (this.$props.store) {
+        this.$props.store.commit('clearAccess');
+        this.$props.store.commit('clearRefresh');
+      }
+      this.user_data = '';
+      this.$router.push('/log-in');
+    }
+  }
+});
 </script>
