@@ -3,10 +3,10 @@
     <h1>Sign up</h1>
     <form @submit.prevent="submitForm">
       <label>Username:</label>
-      <input type="email" name="username" v-model="username"><br><br>
+      <input type="text" name="username" v-model="username"><br><br>
       <label>Password:</label>
       <input type="password" name="password" v-model="password"><br><br>
-      <button type="sumbit">Sign up</button>
+      <button type="submit">Sign up</button>
     </form>
 
   </div>
@@ -29,8 +29,7 @@ export default {
         username: this.username,
         password: this.password,
       }
-      axios
-          .post('api/v1/users/', formData)
+      axios.post('api/v1/users/', formData)
           .then(response =>{
             console.log(response)
             router.push('/log-in')
