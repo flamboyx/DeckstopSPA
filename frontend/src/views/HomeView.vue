@@ -6,22 +6,22 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import axios from "axios";
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'HomeView',
+  name: 'Home',
   props: {
     store: Object
   },
-  data(){
+  data() {
     return{
-      user_data: '' as string
+      user_data: ''
     }
   },
   computed: {
-    userIsLoggedIn(): boolean {
+    userIsLoggedIn() {
       return !!localStorage.getItem('access');
     }
   },
@@ -29,9 +29,9 @@ export default defineComponent({
     this.getMe()
   },
   methods:{
-    getMe(): void {
+    getMe(e) {
       axios
-          .get("api/v1/users/me")
+          .get("/api/v1/users/me")
           .then(response => {
             console.log(response)
             this.user_data = response.data.username
@@ -40,7 +40,7 @@ export default defineComponent({
             console.log(error)
           })
     },
-    logout(): void {
+    logout()  {
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
 

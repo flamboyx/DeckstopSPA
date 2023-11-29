@@ -8,9 +8,9 @@
       <input type="password" name="password" v-model="password"><br><br>
       <button type="submit">Sign up</button>
     </form>
-
   </div>
 </template>
+
 <script>
 import axios from 'axios'
 import router from "@/router";
