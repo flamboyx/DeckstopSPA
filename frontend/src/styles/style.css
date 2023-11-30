@@ -1,0 +1,71 @@
+body {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    background: white;
+    overflow: hidden;
+}
+
+.road {
+    position: fixed;
+    width: 500px;
+    height: 90vh;
+    bottom: 0;
+    background: #19061F;
+}
+
+#player {
+    position: absolute;
+    bottom: 0;
+    width: 60px;
+}
+
+.enemy {
+    position: absolute;
+    width: 90px;
+}
+
+.bg_sprite {
+    position: absolute;
+}
+
+.stars {
+    position: absolute;
+    width: 500px;
+    right: 0;
+}
+
+.stars_1, .stars_2 {
+
+}
+
+.nebula_1 {
+    transform: translate(2vh, 35vh);
+    width: 200px;
+}
+
+.nebula_2 {
+    transform: translate(-30vh, 10vh);
+    width: 300px;
+}
+
+#pause_button {
+    position: fixed;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.07s ease;
+}
+
+#pause_button:hover {
+    transform: scale(1.2, 1.2) rotate(10deg);
+}
+
+#pause_button img {
+    width: 50px;
+}
+
+#game_button #play {
+    display: none;
+}
