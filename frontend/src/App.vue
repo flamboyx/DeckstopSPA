@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav id="nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/game">Game</router-link> |
         <router-link to="/log-in">Log in</router-link> |
@@ -63,7 +63,19 @@ export default {
   color: #2c3e50;
 }
 
+body {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    background: white;
+    overflow: hidden;
+}
+
 nav {
+  background: white;
+  z-index: 1;
+  position: sticky;
+  width: 440px;
   padding: 30px;
 
   a {
