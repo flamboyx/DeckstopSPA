@@ -8,8 +8,8 @@
 
 #player {
     position: absolute;
-    bottom: 0;
     width: 60px;
+    transform: translateY(75vh);
 }
 
 .enemy {

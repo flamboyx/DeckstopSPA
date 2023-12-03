@@ -5,23 +5,35 @@ export function game(): void {
     let speed: number = 3;
 
     const nav: Element = document.querySelector('#nav')!;
+
+    const road: Element = document.querySelector('.road')!;
+    const roadWidth: number = road.clientWidth;
+    const roadHeight = road.clientHeight;
+
     const player: Element = document.querySelector('#player')!;
+    const playerWidth: number = player.clientWidth;
+    const playerHeight: number = player.clientHeight;
+    const playerCoords: {x: number, y: number} = getCoords(player);
+    const playerMoveDirection: {top: number, bottom: number, left: number, right: number} = {
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0
+    };
 
     const stars: NodeListOf<Element> = document.querySelectorAll('.stars')!;
     const stars_1_1: Element = stars[0];
     const stars_2_1: Element = stars[1];
     const stars_1_2: Element = stars[2];
     const stars_2_2: Element = stars[3];
-
-    const bg_sprites: NodeListOf<Element> = document.querySelectorAll('.bg_sprite')!;
-    const bg_sprite_1: Element = bg_sprites[0];
-    const bg_sprite_2: Element = bg_sprites[1];
-
     const coordsStars_1_1: {x: number, y: number} = getCoords(stars_1_1);
     const coordsStars_2_1: {x: number, y: number} = getCoords(stars_2_1);
     const coordsStars_1_2: {x: number, y: number} = getCoords(stars_1_2);
     const coordsStars_2_2: {x: number, y: number} = getCoords(stars_2_2);
 
+    const bg_sprites: NodeListOf<Element> = document.querySelectorAll('.bg_sprite')!;
+    const bg_sprite_1: Element = bg_sprites[0];
+    const bg_sprite_2: Element = bg_sprites[1];
     const coordsBg_sprite_1: {x: number, y: number} = getCoords(bg_sprite_1)
     const coordsBg_sprite_2: {x: number, y: number} = getCoords(bg_sprite_2)
 
@@ -82,7 +94,11 @@ export function game(): void {
 
             let offset: number = 0;
             if (widthCoef > 0) {
-                offset = bg_sprite_1.clientWidth;
+                offset = bg_sprite_1.clientWidth / 2;
+            } else if (widthCoef > 0.25) {
+                offset = bg_sprite_1.clientWidth / 4;
+            } else if (widthCoef === 0) {
+                offset = bg_sprite_1.clientWidth / 4;
             }
 
             const height: any = heightCoef * nav.clientHeight;
@@ -133,11 +149,100 @@ export function game(): void {
             `transform: translate(${newCoordX_Bg_sprite_2}px, ${newCoordY_Bg_sprite_2}px)`);
     }
 
+    function playerMoveTop(): void {
+        const newY: number = playerCoords.y - speed;
+        if (newY < 0) {
+            return;
+        }
+
+        playerCoords.y = newY;
+        playerMove(playerCoords.x, playerCoords.y);
+        playerMoveDirection.top = requestAnimationFrame(playerMoveTop);
+    }
+
+    function playerMoveBottom(): void {
+        const newY: number = playerCoords.y + speed;
+        if (newY + playerHeight > roadHeight) {
+            return;
+        }
+
+        playerCoords.y = newY;
+        playerMove(playerCoords.x, playerCoords.y);
+        playerMoveDirection.bottom = requestAnimationFrame(playerMoveBottom);
+    }
+
+    function playerMoveLeft(): void {
+        const newX: number = playerCoords.x - speed;
+        if (newX < -roadWidth / 2 + playerWidth / 2) {
+            return;
+        }
+
+        playerCoords.x = newX;
+        playerMove(playerCoords.x, playerCoords.y);
+        playerMoveDirection.left = requestAnimationFrame(playerMoveLeft);
+    }
+
+    function playerMoveRight(): void {
+        const newX: number = playerCoords.x + speed;
+        if (newX > roadWidth / 2 - playerWidth / 2) {
+            return;
+        }
+
+        playerCoords.x = newX;
+        playerMove(playerCoords.x, playerCoords.y);
+        playerMoveDirection.right = requestAnimationFrame(playerMoveRight);
+    }
+
+    function playerMove(x: number, y: number): void {
+        player.setAttribute('style',
+            `transform: translate(${x}px, ${y}px)`);
+    }
+
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+        if (isPause) {
+            return;
+        }
+
+        const code: string = event.code;
+
+        if (code === 'KeyW' && playerMoveDirection.top === 0) {
+            playerMoveDirection.top = requestAnimationFrame(playerMoveTop);
+        } else if (code === 'KeyS' && playerMoveDirection.bottom === 0) {
+            playerMoveDirection.bottom = requestAnimationFrame(playerMoveBottom);
+        } else if (code === 'KeyA' && playerMoveDirection.left === 0) {
+            playerMoveDirection.left = requestAnimationFrame(playerMoveLeft);
+        } else if (code === 'KeyD' && playerMoveDirection.right === 0) {
+            playerMoveDirection.right = requestAnimationFrame(playerMoveRight);
+        }
+    })
+
+    document.addEventListener('keyup', (event: KeyboardEvent) => {
+        const code: string = event.code;
+
+        if (code === 'KeyW') {
+            cancelAnimationFrame(playerMoveDirection.top);
+            playerMoveDirection.top = 0;
+        } else if (code === 'KeyS') {
+            cancelAnimationFrame(playerMoveDirection.bottom);
+            playerMoveDirection.bottom = 0;
+        } else if (code === 'KeyA') {
+            cancelAnimationFrame(playerMoveDirection.left);
+            playerMoveDirection.left = 0;
+        } else if (code === 'KeyD') {
+            cancelAnimationFrame(playerMoveDirection.right);
+            playerMoveDirection.right = 0;
+        }
+    })
+
     const pauseButton: Element = document.querySelector('#pause_button')!;
     pauseButton.addEventListener('click', () => {
         isPause = !isPause;
         if (isPause) {
             cancelAnimationFrame(animationId);
+            cancelAnimationFrame(playerMoveDirection.top);
+            cancelAnimationFrame(playerMoveDirection.bottom);
+            cancelAnimationFrame(playerMoveDirection.left);
+            cancelAnimationFrame(playerMoveDirection.right);
             pauseButton.children[0].setAttribute('style', 'display: none');
             pauseButton.children[1].setAttribute('style', 'display: initial');
         } else {
