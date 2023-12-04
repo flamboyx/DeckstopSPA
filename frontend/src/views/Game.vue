@@ -1,6 +1,6 @@
 <template>
   <body>
-    <div class="road">
+    <div id="road">
       <img class="stars stars_1 stars_1_1" src="../images/stars_1.png">
       <img class="stars stars_1 stars_2_1" src="../images/stars_2.png">
       <img class="stars stars_2 stars_1_2" src="../images/stars_1.png">

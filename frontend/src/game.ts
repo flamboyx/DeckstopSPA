@@ -2,11 +2,15 @@ export function game(): void {
     let isPause: boolean = false;
     let animationId: number;
 
-    let speed: number = 3;
+    let isShooting: boolean = false;
+    let shootInterval: number;
+    let animShoot: number;
+
+    let speed: number = 4;
 
     const nav: Element = document.querySelector('#nav')!;
 
-    const road: Element = document.querySelector('.road')!;
+    const road: Element = document.querySelector('#road')!;
     const roadWidth: number = road.clientWidth;
     const roadHeight = road.clientHeight;
 
@@ -53,6 +57,7 @@ export function game(): void {
 
     function startGame(): void {
         backgroundAnimation();
+        bulletLogic();
 
         animationId = requestAnimationFrame(startGame);
     }
@@ -90,15 +95,11 @@ export function game(): void {
 
         if (newCoordY_Bg_sprite_1 > window.innerHeight) {
             const heightCoef: number = randomNumberBetween(2, 10);
-            const widthCoef: number = randomNumberBetween(-0.5, 0.5);
+            const widthCoef: number = randomNumberBetween(-0.5, 0.2);
 
             let offset: number = 0;
-            if (widthCoef > 0) {
+            if (widthCoef >= -0.1) {
                 offset = bg_sprite_1.clientWidth / 2;
-            } else if (widthCoef > 0.25) {
-                offset = bg_sprite_1.clientWidth / 4;
-            } else if (widthCoef === 0) {
-                offset = bg_sprite_1.clientWidth / 4;
             }
 
             const height: any = heightCoef * nav.clientHeight;
@@ -147,6 +148,28 @@ export function game(): void {
             `transform: translate(${newCoordX_Bg_sprite_1}px, ${newCoordY_Bg_sprite_1}px)`);
         bg_sprite_2.setAttribute('style',
             `transform: translate(${newCoordX_Bg_sprite_2}px, ${newCoordY_Bg_sprite_2}px)`);
+    }
+
+    function bulletLogic(): void {
+        const bullets: NodeListOf<Element> = document.querySelectorAll('.bullet');
+        for (let i: number = 0; i < bullets.length; i++) {
+            const bullet: Element = bullets[i];
+
+            const bulletCoords: {x: number, y: number} = getCoords(bullets[i]);
+            let newCoordY: number = bulletCoords.y - 10;
+
+            if (newCoordY < -10) {
+                road?.removeChild(bullet);
+            }
+
+            bulletCoords.y = newCoordY;
+
+            bullet.setAttribute('style', 'position: absolute; ' +
+            'width: 6px; ' +
+            'height: 18px; ' +
+            'background: white; ' +
+            `transform: translate(${bulletCoords.x}px, ${newCoordY}px)`);
+        }
     }
 
     function playerMoveTop(): void {
@@ -198,6 +221,18 @@ export function game(): void {
             `transform: translate(${x}px, ${y}px)`);
     }
 
+    function playerShoot(): void {
+        const bullet = document.createElement('div');
+        bullet.setAttribute('class', 'bullet')
+        bullet.setAttribute('style', 'position: absolute; ' +
+            'width: 6px; ' +
+            'height: 18px; ' +
+            'background: white; ' +
+            `transform: translate(${playerCoords.x + roadWidth / 2 - 3}px, ${playerCoords.y - 9}px)`);
+
+        road?.appendChild(bullet);
+    }
+
     document.addEventListener('keydown', (event: KeyboardEvent) => {
         if (isPause) {
             return;
@@ -213,6 +248,15 @@ export function game(): void {
             playerMoveDirection.left = requestAnimationFrame(playerMoveLeft);
         } else if (code === 'KeyD' && playerMoveDirection.right === 0) {
             playerMoveDirection.right = requestAnimationFrame(playerMoveRight);
+        }
+
+        if (code === 'Space') {
+            if (!isShooting) {
+                shootInterval = setInterval((): void => {
+                animShoot = requestAnimationFrame(playerShoot);
+                }, 100);
+                isShooting = true;
+            }
         }
     })
 
@@ -232,6 +276,12 @@ export function game(): void {
             cancelAnimationFrame(playerMoveDirection.right);
             playerMoveDirection.right = 0;
         }
+
+        if (code === 'Space') {
+            cancelAnimationFrame(animShoot);
+            clearInterval(shootInterval);
+            isShooting = false;
+        }
     })
 
     const pauseButton: Element = document.querySelector('#pause_button')!;
@@ -243,6 +293,7 @@ export function game(): void {
             cancelAnimationFrame(playerMoveDirection.bottom);
             cancelAnimationFrame(playerMoveDirection.left);
             cancelAnimationFrame(playerMoveDirection.right);
+            cancelAnimationFrame(animShoot);
             pauseButton.children[0].setAttribute('style', 'display: none');
             pauseButton.children[1].setAttribute('style', 'display: initial');
         } else {
