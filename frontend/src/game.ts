@@ -24,13 +24,27 @@ export function game(): void {
     let beginning: boolean = true;
     let middle: boolean = false;
     let isPause: boolean = false;
+    let isWorking: boolean = false;
+    let invincible: boolean = false;
     let animationId: number;
 
     let isShooting: boolean = false;
     let shootInterval: number;
     let animShoot: number;
 
+    let animBullet: number;
+    let animEnemy: number;
+    let animSpawnEnemy: number;
+    let enemyInterval: number;
+
     let speed: number = 4;
+
+    const scoreEl: Element = document.querySelector('#score')!;
+    let score: number = 0;
+
+    const livesEl: Element = document.querySelector('#lives')!;
+    let lives: number = 3;
+    const invincibleTimer: number = 3000;
 
     const navEl: Element = document.querySelector('#nav')!;
 
@@ -71,15 +85,17 @@ export function game(): void {
             setTimeout(spawnEnemy, 2000);
             beginning = false;
             middle = true;
-        } else if (middle){
-            setInterval(spawnEnemy, 5000);
+        } else if (middle) {
+            enemyInterval = setInterval((): void => {
+                animSpawnEnemy = requestAnimationFrame(spawnEnemy);
+                }, 5000);
             middle = false;
         }
 
-        backgroundAnimation();
-        bulletLogic();
-        enemyLogic();
+        animBullet = requestAnimationFrame(bulletLogic);
+        animEnemy = requestAnimationFrame(enemyLogic);
 
+        backgroundAnimation();
         animationId = requestAnimationFrame(startGame);
     }
 
@@ -135,8 +151,8 @@ export function game(): void {
         roadEl?.appendChild(enemyEl);
         const enemy: elObj = createElementObject(enemyEl);
 
-        const enemyX: number = randomNumberBetween(-road.width / 2, road.width / 2 - enemy.width);
-        const enemyY: number = randomNumberBetween(-enemy.height, -enemy.height * 5);
+        const enemyX: number = randomNumberBetween(-road.width, -enemy.width);
+        const enemyY: number = randomNumberBetween(-enemy.height * 6, -enemy.height * 2);
         enemyEl.setAttribute('style',
             `transform: translate(${enemyX}px, ${enemyY}px)`);
     }
@@ -263,19 +279,54 @@ export function game(): void {
             enemyEl.setAttribute('style',
             `transform: translate(${enemy.coords.x}px, ${enemy.coords.y}px)`);
 
-            if (hasCollision(player, enemy)) {
+            if (hasCollision(player, enemy) && !invincible) {
                 roadEl.setAttribute('style',
                     'background: red');
+                setTimeout((): void => {
+                    roadEl.setAttribute('style',
+                        'background: #19061F');
+                    setTimeout((): void => {
+                        roadEl.setAttribute('style',
+                            'background: red');
+                        setTimeout((): void => {
+                            roadEl.setAttribute('style',
+                                'background: #19061F');
+                            setTimeout((): void => {
+                                roadEl.setAttribute('style',
+                                    'background: red');
+                                setTimeout((): void => {
+                                    roadEl.setAttribute('style',
+                                        'background: #19061F');
+                                    }, 50);
+                                }, 20);
+                            }, 50);
+                        }, 20);
+                    }, 50);
+
+                invincible = true;
+                setTimeout(() => {
+                    invincible = false;
+                }, invincibleTimer)
+
+                lives--;
+                let livesStr: string = ''
+                for (let j: number = 0; j <= lives; j++) {
+                    livesStr += '&lt3 '
+                }
+
+                livesEl.innerHTML = livesStr;
             }
 
             const bullets: NodeListOf<Element> = document.querySelectorAll('.bullet');
             for (let j: number = 0; j < bullets.length; j++) {
                 const bulletEl: Element = bullets[j];
                 const bullet: elObj = createElementObject(bulletEl);
+
                 if (hasCollision(bullet, enemy)) {
-                    console.log('Hi')
                     roadEl?.removeChild(enemyEl);
                     roadEl?.removeChild(bulletEl);
+                    score += Math.round((road.height - enemy.coords.y) * 10);
+                    scoreEl.innerHTML = `${score}`;
                 }
             }
         }
@@ -305,7 +356,7 @@ export function game(): void {
 
     function playerMoveLeft(): void {
         const newX: number = player.coords.x - speed;
-        if (newX < -road.width / 2) {
+        if (newX < -road.width) {
             return;
         }
 
@@ -316,7 +367,7 @@ export function game(): void {
 
     function playerMoveRight(): void {
         const newX: number = player.coords.x + speed;
-        if (newX > road.width / 2 - player.width) {
+        if (newX > -player.width) {
             return;
         }
 
@@ -391,20 +442,31 @@ export function game(): void {
         }
     })
 
+    document.addEventListener("visibilitychange", function(): void{
+        isWorking = !(document.hidden || window.onblur);
+    });
+
     const pauseButton: Element = document.querySelector('#pause_button')!;
     pauseButton.addEventListener('click', () => {
         isPause = !isPause;
-        if (isPause) {
+        if (isPause || isWorking) {
             cancelAnimationFrame(animationId);
             cancelAnimationFrame(player.moveDirection.top);
             cancelAnimationFrame(player.moveDirection.bottom);
             cancelAnimationFrame(player.moveDirection.left);
             cancelAnimationFrame(player.moveDirection.right);
+            cancelAnimationFrame(animSpawnEnemy);
             cancelAnimationFrame(animShoot);
+            cancelAnimationFrame(animBullet);
+            cancelAnimationFrame(animEnemy);
+            clearInterval(enemyInterval);
             pauseButton.children[0].setAttribute('style', 'display: none');
             pauseButton.children[1].setAttribute('style', 'display: initial');
         } else {
             startGame()
+            enemyInterval = setInterval((): void => {
+                animSpawnEnemy = requestAnimationFrame(spawnEnemy);
+                }, 5000);
             pauseButton.children[1].setAttribute('style', 'display: none');
             pauseButton.children[0].setAttribute('style', 'display: initial');
         }

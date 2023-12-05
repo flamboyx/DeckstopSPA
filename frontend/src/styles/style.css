@@ -1,5 +1,4 @@
 #road {
-    position: fixed;
     width: 500px;
     height: 90vh;
     bottom: 0;
@@ -9,7 +8,7 @@
 #player {
     position: absolute;
     width: 60px;
-    transform: translateY(75vh);
+    transform: translate(-270px, 75vh);
     border: 1px solid green;
     left: 50%;
     right: 50%;
@@ -78,4 +77,17 @@
 
 #pause_button #play {
     display: none;
+}
+
+#info {
+    width: 500px;
+    height: 90vh;
+    bottom: 0;
+    background: black;
+}
+
+#info h1 {
+    margin: 12px 20px;
+    text-align: left;
+    color: white;
 }

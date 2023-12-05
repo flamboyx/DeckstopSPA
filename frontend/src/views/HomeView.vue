@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <h1>Home</h1>
+
     <span v-if="userIsLoggedIn" >{{ user_data }}</span>
     <button v-if="userIsLoggedIn" @click="logout">Log out</button>
   </div>

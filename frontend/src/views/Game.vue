@@ -9,6 +9,16 @@
       <img class="bg_sprite nebula_2" src="../images/nebula_1.png">
       <img id="player" src="../images/player.png">
     </div>
+    <div id="info">
+      <h1>HiScore <i><b id="hiscore"></b></i></h1>
+      <h1>Score <i><b id="score"></b></i></h1>
+      <br>
+      <h1>Life <b id="lives">&lt3 &lt3 &lt3</b></h1>
+      <h1>Ability </h1>
+      <br>
+      <h1>Power </h1>
+      <h1>Grace </h1>
+    </div>
 
     <button type="button" id="pause_button">
       <img id="pause" src="../images/pause.png">
