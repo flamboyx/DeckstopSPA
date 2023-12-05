@@ -7,11 +7,8 @@
       <img class="stars stars_2 stars_2_2" src="../images/stars_2.png">
       <img class="bg_sprite nebula_1" src="../images/nebula_2.png">
       <img class="bg_sprite nebula_2" src="../images/nebula_1.png">
+      <img id="player" src="../images/player.png">
     </div>
-
-    <img id="player" src="../images/player.png">
-
-    <img class="enemy" src="../images/enemy.png">
 
     <button type="button" id="pause_button">
       <img id="pause" src="../images/pause.png">

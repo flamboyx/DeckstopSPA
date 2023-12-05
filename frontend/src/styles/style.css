@@ -10,11 +10,27 @@
     position: absolute;
     width: 60px;
     transform: translateY(75vh);
+    border: 1px solid green;
+    left: 50%;
+    right: 50%;
 }
 
 .enemy {
     position: absolute;
     width: 90px;
+    height: auto;
+    border: 1px solid red;
+    left: 50%;
+    right: 50%;
+}
+
+.bullet {
+    position: absolute;
+    width: 6px;
+    height: 18px;
+    background: white;
+    left: 50%;
+    right: 50%;
 }
 
 .bg_sprite {
