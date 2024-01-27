@@ -1,5 +1,5 @@
 """
-ASGI config for spa project.
+ASGI config for nya_app project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'spa.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nya_app.settings')
 
 application = get_asgi_application()

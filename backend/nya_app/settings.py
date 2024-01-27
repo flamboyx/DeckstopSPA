@@ -47,7 +47,7 @@ SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
 }
 
-ROOT_URLCONF = 'spa.urls'
+ROOT_URLCONF = 'nya_app.urls'
 
 TEMPLATES = [
     {
@@ -65,7 +65,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'spa.wsgi.application'
+WSGI_APPLICATION = 'nya_app.wsgi.application'
 
 
 # Database
