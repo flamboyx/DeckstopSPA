@@ -1,9 +1,10 @@
 <template>
   <div class="home">
-    <h1>Home</h1>
+    <h1>Домашняя страница</h1>
 
     <span v-if="userIsLoggedIn" >{{ user_data }}</span>
-    <button v-if="userIsLoggedIn" @click="logout">Log out</button>
+    <br><br>
+    <button v-if="userIsLoggedIn" @click="logout">Выйти</button>
   </div>
 </template>
 
@@ -13,34 +14,41 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Home',
+
   props: {
     store: Object
   },
+
   data() {
     return{
       user_data: ''
     }
   },
+
   computed: {
     userIsLoggedIn() {
-      return !!localStorage.getItem('access');
+      return !localStorage.getItem('access');
     }
   },
+
   mounted() {
     this.getMe()
   },
+
   methods:{
-    getMe(e) {
+    getMe() {
       axios
-          .get("/api/v1/users/me")
+          .get("/api/me/")
           .then(response => {
-            console.log(response)
-            this.user_data = response.data.username
+            console.log('data', response.data)
+
+            this.user_data = response.data.name
           })
           .catch(error => {
-            console.log(error)
+            console.log('error', error)
           })
     },
+
     logout()  {
       localStorage.removeItem('access');
       localStorage.removeItem('refresh');
@@ -50,7 +58,7 @@ export default defineComponent({
         this.$props.store.commit('clearRefresh');
       }
       this.user_data = '';
-      this.$router.push('/log-in');
+      this.$router.push('/login');
     }
   }
 });

@@ -1,58 +1,84 @@
 <template>
-  <div class="log-in-page">
-    <h1>Log in</h1>
-    <form @submit.prevent="submitForm">
-      <label>Username:</label>
-      <input type="text" name="username" v-model="username"><br><br>
-      <label>Password:</label>
-      <input type="password" name="password" v-model="password"><br><br>
-      <button type="submit">Log in</button>
+  <div class="login-page">
+    <h1>Вход</h1>
+    <form v-on:submit.prevent="submitForm">
+      <label>E-mail:</label>
+      <input type="email" name="email" placeholder="Введите ваш e-mail" v-model="form.email"><br><br>
+      <label>Пароль:</label>
+      <input type="password" name="password" placeholder="Введите ваш пароль" v-model="form.password"><br><br>
+
+      <template v-if="errors.length > 0">
+          <div>
+              <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
+          </div>
+      </template>
+
+      <button>Войти</button>
     </form>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-import router from "@/router";
+import axios from 'axios'
+import router from "@/router"
+import { useUserStore } from '@/stores/user'
 
 export default {
   name: "LogIn",
-  data() {
+
+  setup() {
+    const userStore = useUserStore()
+
     return {
-      username: '',
-      password: ''
+      userStore
     }
   },
-  methods: {
-    submitForm(e) {
-      axios.defaults.headers.common['Authorization'] = ''
-      localStorage.removeItem("access")
 
-      const formData = {
-        username: this.username,
-        password: this.password
+  data() {
+      return {
+          form: {
+            email: '',
+            password: '',
+          },
+          errors: []
+      }
+  },
+
+  methods: {
+    async submitForm() {
+      this.errors = []
+
+      if (this.form.email === '') {
+        this.errors.push('Вы не ввели ваш e-mail')
       }
 
-      axios.post('/api/v1/jwt/create/', formData)
-          .then(response => {
-            console.log(response)
+      if (this.form.password === '') {
+        this.errors.push('Вы не ввели ваш пароль')
+      }
 
-            const access = response.data.access
-            const refresh = response.data.refresh
+      if (this.errors.length === 0) {
+        await axios
+            .post('/api/login/', this.form)
+            .then(response => {
+              this.userStore.setToken(response.data)
 
-            this.$store.commit("setAccess", access)
-            this.$store.commit("setRefresh", refresh)
+              axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
+            })
+            .catch(error => {
+              console.log('error', error)
+            })
 
-            axios.defaults.headers.common['Authorization'] = "JWT " + access
+        await axios
+            .get('/api/me/')
+            .then(response => {
+              this.userStore.setUserInfo(response.data)
 
-            localStorage.setItem("access", access);
-            localStorage.setItem("refresh", refresh);
-
-            router.push('/')
-          })
-          .catch(error => {
-            console.log(error)
-          })
+              this.$router.push('/')
+            })
+            .catch(error => {
+              console.log('error', error)
+            })
+      }
     }
   }
 }

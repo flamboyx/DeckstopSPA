@@ -1,57 +1,40 @@
 <template>
     <nav id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/game">Game</router-link> |
-        <router-link to="/log-in">Log in</router-link> |
-        <router-link to="/sign-up">Sign up</router-link>
+        <router-link to="/">Главная</router-link> |
+        <router-link to="/game">Играть</router-link> |
+        <router-link to="/login">Войти</router-link> |
+        <router-link to="/signup">Зарегистрироваться</router-link>
     </nav>
     <router-view/>
 </template>
+
 <script>
-import axios from "axios";
+    import axios from 'axios'
+    import { useUserStore } from '@/stores/user'
 
-export default {
-    name: 'App',
-    beforeCreate() {
-        console.log(this.$store)
-        this.$store.commit("initializeStore")
-        const access = this.$store.state.access
-        if (access) {
-            axios.defaults.headers.common['Authorization'] = "JWT " + access
+    export default {
+      name: 'App',
+
+      setup() {
+        const userStore = useUserStore()
+
+        return {
+          userStore
+        }
+      },
+
+      beforeCreate() {
+        this.userStore.initStore()
+
+        const token = this.userStore.user.access
+
+        if (token) {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         } else {
-            axios.defaults.headers.common['Authorization'] = ''
+            axios.defaults.headers.common["Authorization"] = "";
         }
-
-    },
-    mounted() {
-        setInterval(() => {
-            this.getAccess()
-        }, 59000)
-
-    },
-    methods: {
-        getAccess(e) {
-            if (this.$store.state.refresh === "")
-                return;
-
-            const accessData = {
-                refresh: this.$store.state.refresh
-            }
-            axios.post(
-                '/api/v1/jwt/refresh/', accessData
-            ).then(
-                response => {
-                    const access = response.data.access
-                    console.log(access)
-                    localStorage.setItem("access", access)
-                    this.$store.commit("setAccess", access)
-                }
-            ).catch(error => {
-                console.log(error)
-            })
-        }
+      },
     }
-}
 </script>
 
 <style lang="scss">

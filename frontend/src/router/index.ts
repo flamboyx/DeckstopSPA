@@ -15,12 +15,12 @@ const routes = [
     component: () => import('../views/Game.vue')
   },
   {
-    path: '/sign-up',
+    path: '/signup',
     name: 'SignUp',
     component: SignUp
   },
   {
-    path: '/log-in',
+    path: '/login',
     name: 'LogIn',
     component: LogIn
   }
