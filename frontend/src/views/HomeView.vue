@@ -5,23 +5,34 @@
     <span v-if="userIsLoggedIn" >{{ user_data }}</span>
     <br><br>
     <button v-if="userIsLoggedIn" @click="logout">Выйти</button>
+
+    <div>
+      <div>
+        <h2>Таблица рекордов</h2>
+      </div>
+
+      <div v-for="score in scores" v-bind:key="score.id">
+        <div>
+          <h1>{{ score.score }}</h1>
+          <p>{{ score.got_by.name }}</p>
+          <p>{{ score.got_at_formatted }} назад</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'Home',
 
-  props: {
-    store: Object
-  },
-
   data() {
     return{
-      user_data: ''
+      user_data: '',
+      scores: [],
     }
   },
 
@@ -33,6 +44,7 @@ export default defineComponent({
 
   mounted() {
     this.getMe()
+    this.getScores()
   },
 
   methods:{
@@ -59,6 +71,17 @@ export default defineComponent({
       }
       this.user_data = '';
       this.$router.push('/login');
+    },
+
+    getScores() {
+      axios
+          .get('/api/scoreboard/')
+          .then(response => {
+            this.scores = response.data
+          })
+          .catch(error => {
+            console.log(error)
+          })
     }
   }
 });

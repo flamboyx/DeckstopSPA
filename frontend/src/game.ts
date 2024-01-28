@@ -24,7 +24,8 @@ export function game(): void {
     let beginning: boolean = true;
     let middle: boolean = false;
     let isPause: boolean = false;
-    let isWorking: boolean = false;
+    let isWorking: boolean = true;
+    let isDead: boolean = false;
     let invincible: boolean = false;
     let animationId: number;
 
@@ -38,6 +39,8 @@ export function game(): void {
     let enemyInterval: number;
 
     let speed: number = 4;
+
+    const gameOver: Element = document.querySelector('#game_over')!;
 
     const scoreEl: Element = document.querySelector('#score')!;
     let score: number = 0;
@@ -310,8 +313,15 @@ export function game(): void {
 
                 lives--;
                 let livesStr: string = ''
-                for (let j: number = 0; j <= lives; j++) {
+                for (let j: number = 1; j <= lives; j++) {
                     livesStr += '&lt3 '
+                }
+
+                if (lives == 0) {
+                    isDead = true;
+                    stopGame();
+                    gameOver.setAttribute('style', 'display: initial');
+
                 }
 
                 livesEl.innerHTML = livesStr;
@@ -391,7 +401,7 @@ export function game(): void {
     }
 
     document.addEventListener('keydown', (event: KeyboardEvent) => {
-        if (isPause) {
+        if (isPause || isDead) {
             return;
         }
 
@@ -444,31 +454,45 @@ export function game(): void {
 
     document.addEventListener("visibilitychange", function(): void{
         isWorking = !(document.hidden || window.onblur);
+        if (!isWorking) {
+            stopGame();
+            pauseButton.children[0].setAttribute('style', 'display: none');
+            pauseButton.children[1].setAttribute('style', 'display: initial');
+            isPause = !isPause;
+        }
     });
 
     const pauseButton: Element = document.querySelector('#pause_button')!;
     pauseButton.addEventListener('click', () => {
         isPause = !isPause;
-        if (isPause || isWorking) {
-            cancelAnimationFrame(animationId);
-            cancelAnimationFrame(player.moveDirection.top);
-            cancelAnimationFrame(player.moveDirection.bottom);
-            cancelAnimationFrame(player.moveDirection.left);
-            cancelAnimationFrame(player.moveDirection.right);
-            cancelAnimationFrame(animSpawnEnemy);
-            cancelAnimationFrame(animShoot);
-            cancelAnimationFrame(animBullet);
-            cancelAnimationFrame(animEnemy);
-            clearInterval(enemyInterval);
+        if (isPause && !isDead) {
+            stopGame();
             pauseButton.children[0].setAttribute('style', 'display: none');
             pauseButton.children[1].setAttribute('style', 'display: initial');
         } else {
-            startGame()
-            enemyInterval = setInterval((): void => {
-                animSpawnEnemy = requestAnimationFrame(spawnEnemy);
-                }, 5000);
+            launchGame();
             pauseButton.children[1].setAttribute('style', 'display: none');
             pauseButton.children[0].setAttribute('style', 'display: initial');
         }
     })
+    
+    function stopGame(): void {
+        cancelAnimationFrame(animationId);
+        cancelAnimationFrame(player.moveDirection.top);
+        cancelAnimationFrame(player.moveDirection.bottom);
+        cancelAnimationFrame(player.moveDirection.left);
+        cancelAnimationFrame(player.moveDirection.right);
+        cancelAnimationFrame(animSpawnEnemy);
+        cancelAnimationFrame(animShoot);
+        cancelAnimationFrame(animBullet);
+        cancelAnimationFrame(animEnemy);
+        clearInterval(enemyInterval);
+    }
+
+    function launchGame(): void {
+        startGame()
+            enemyInterval = setInterval((): void => {
+                animSpawnEnemy = requestAnimationFrame(spawnEnemy);
+                }, 5000);
+    }
 }

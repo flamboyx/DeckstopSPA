@@ -11,7 +11,7 @@
     </div>
     <div id="info">
       <h1>HiScore <i><b id="hiscore"></b></i></h1>
-      <h1>Score <i><b id="score"></b></i></h1>
+      <h1>Score <i><b id="score" v-model="score"></b></i></h1>
       <br>
       <h1>Life <b id="lives">&lt3 &lt3 &lt3</b></h1>
       <h1>Ability </h1>
@@ -24,18 +24,48 @@
       <img id="pause" src="../images/pause.png">
       <img id="play" src="../images/play.png">
     </button>
+
+    <div id="game_over">
+      <p><b>Game Over</b></p>
+
+      <button @click.once="sendScore" class="game_button">Send score</button>
+    </div>
   </body>
 </template>
 
-<script lang="ts">
+<script>
 import { game } from '@/game';
+import axios from 'axios';
 
 export default {
+    name: 'Game',
+
+    data() {
+        return {
+            score: 0,
+        }
+    },
+
     mounted() {
         game()
     },
+
     methods: {
         game,
+        sendScore() {
+            console.log('sendScore', this.score)
+
+            axios
+                .post('/api/scoreboard/create/', {
+                  'score': this.score
+                })
+                .then(response => {
+                  console.log('data', response.data)
+                })
+                .catch(error => {
+                  console.log('error', error)
+                })
+        },
     },
 }
 </script>
