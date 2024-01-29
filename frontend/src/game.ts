@@ -494,6 +494,18 @@ export function game(): void {
             pauseButton.children[0].setAttribute('style', 'display: initial');
         }
     })
+
+    const retryButton: Element = document.querySelector('#retry_button')!;
+    retryButton.addEventListener('click', () => {
+        gameOver.setAttribute('style', 'display: none');
+        score = 0;
+        lives = 3;
+        livesEl.innerHTML = '&lt3 &lt3 &lt3';
+        isDead = false;
+        middle = false;
+        beginning = true;
+        startGame();
+    })
     
     function stopGame(): void {
         cancelAnimationFrame(animationId);

@@ -28,7 +28,7 @@
     <div id="game_over">
       <p><b>Game Over</b></p>
 
-      <button class="game_button">Retry</button>
+      <button type="button" id="retry_button" class="game_button">Retry</button>
     </div>
   </body>
 </template>
