@@ -10,14 +10,22 @@
       <div>
         <h2>Таблица рекордов</h2>
       </div>
-
-      <div v-for="score in scores" v-bind:key="score.id">
-        <div>
-          <h1>{{ score.score }}</h1>
-          <p>{{ score.got_by.name }}</p>
-          <p>{{ score.got_at_formatted }} назад</p>
-        </div>
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Рекорд</th>
+            <th>Игрок</th>
+            <th>Дата</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="score in scores" :key="score.id">
+            <td>{{ score.score }}</td>
+            <td>{{ score.got_by.name }}</td>
+            <td>{{ score.got_at_formatted }} назад</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
