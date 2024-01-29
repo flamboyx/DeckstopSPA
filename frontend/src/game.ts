@@ -1,4 +1,5 @@
 import enemyImg_1 from './images/enemy.png';
+import { useUserStore } from './stores/user';
 
 export function game(): void {
     type coords = {
@@ -20,6 +21,9 @@ export function game(): void {
             right: number
         }
     }
+
+    const userStore = useUserStore()
+    const token = userStore.user.access
 
     let beginning: boolean = true;
     let middle: boolean = false;
@@ -322,6 +326,21 @@ export function game(): void {
                     stopGame();
                     gameOver.setAttribute('style', 'display: initial');
 
+                    fetch('http://127.0.0.1:8000/api/scoreboard/create/', {
+                          method: 'POST',
+                          body: JSON.stringify({
+                             score: score
+                          }),
+                          headers: {
+                              Accept: 'application/json',
+                              'Content-Type': 'application/json',
+                              Authorization: `Bearer ${token}`
+                          }
+                    })
+                    .then(response => response.text())
+                    .then(score => {
+                        console.log(score);
+                    });
                 }
 
                 livesEl.innerHTML = livesStr;
@@ -454,7 +473,7 @@ export function game(): void {
 
     document.addEventListener("visibilitychange", function(): void{
         isWorking = !(document.hidden || window.onblur);
-        if (!isWorking) {
+        if (!isWorking && !isDead) {
             stopGame();
             pauseButton.children[0].setAttribute('style', 'display: none');
             pauseButton.children[1].setAttribute('style', 'display: initial');

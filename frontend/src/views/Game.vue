@@ -11,7 +11,7 @@
     </div>
     <div id="info">
       <h1>HiScore <i><b id="hiscore"></b></i></h1>
-      <h1>Score <i><b id="score" v-model="score"></b></i></h1>
+      <h1>Score <i><b id="score"></b></i></h1>
       <br>
       <h1>Life <b id="lives">&lt3 &lt3 &lt3</b></h1>
       <h1>Ability </h1>
@@ -28,7 +28,7 @@
     <div id="game_over">
       <p><b>Game Over</b></p>
 
-      <button @click.once="sendScore" class="game_button">Send score</button>
+      <button class="game_button">Retry</button>
     </div>
   </body>
 </template>
@@ -52,6 +52,7 @@ export default {
 
     methods: {
         game,
+
         sendScore() {
             console.log('sendScore', this.score)
 

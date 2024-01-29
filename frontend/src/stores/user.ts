@@ -4,7 +4,8 @@ import axios from 'axios'
 export const useUserStore = defineStore({
     id: 'user',
 
-    state: () => ({
+    state: (): {user: {isAuthenticated: boolean, id: null | string, name: null | string, email: null | string,
+        access: null | string, refresh: null | string}} => ({
         user: {
             isAuthenticated: false,
             id: null,
@@ -35,7 +36,7 @@ export const useUserStore = defineStore({
             }
         },
 
-        setToken(data) {
+        setToken(data: { access: string; refresh: string}) {
             console.log('setToken', data)
 
             this.user.access = data.access
@@ -65,7 +66,7 @@ export const useUserStore = defineStore({
             localStorage.setItem('user.email', '')
         },
 
-        setUserInfo(user) {
+        setUserInfo(user: { id: string; name: string; email: string }) {
             console.log('setUserInfo', user)
 
             this.user.id = user.id
