@@ -53,11 +53,11 @@ body {
     margin: 0;
     background: #19061F;
     overflow: hidden;
-  text-align: center;
+    text-align: center;
 }
 
 nav {
-  background: none;
+  background: #19061F;
   z-index: 1;
   position: sticky;
   width: 440px;

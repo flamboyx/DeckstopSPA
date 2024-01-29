@@ -36,6 +36,7 @@ export function game(): void {
     let isShooting: boolean = false;
     let shootInterval: number;
     let animShoot: number;
+    let animEnemyShoot: number;
 
     let animBullet: number;
     let animEnemy: number;
@@ -44,10 +45,18 @@ export function game(): void {
 
     let speed: number = 4;
 
-    const gameOver: Element = document.querySelector('#game_over')!;
+    const pauseButtonEl: HTMLElement = document.querySelector('#pause_button')!;
+
+    const gameOverEl: Element = document.querySelector('#game_over')!;
+
+    const yourScoreEl: Element = document.querySelector('#your_score')!;
 
     const scoreEl: Element = document.querySelector('#score')!;
     let score: number = 0;
+
+    const hiscoreEl: Element = document.querySelector('#hiscore')!;
+
+    const newRecordEl: Element = document.querySelector('#new_record')!;
 
     const livesEl: Element = document.querySelector('#lives')!;
     let lives: number = 3;
@@ -83,10 +92,12 @@ export function game(): void {
     const coordsStars_2_2: coords = getCoords(stars_2_2);
 
     const bg_sprites: NodeListOf<Element> = document.querySelectorAll('.bg_sprite')!;
-    const bg_sprite_1: Element = bg_sprites[0];
-    const bg_sprite_2: Element = bg_sprites[1];
-    const coordsBg_sprite_1: coords = getCoords(bg_sprite_1)
-    const coordsBg_sprite_2: coords = getCoords(bg_sprite_2)
+    const bg_spriteEl_1: Element = bg_sprites[0];
+    const bg_spriteEl_2: Element = bg_sprites[1];
+    const bg_sprite_1: elObj = createElementObject(bg_spriteEl_1);
+    const bg_sprite_2: elObj = createElementObject(bg_spriteEl_2);
+    const coordsBg_spriteEl_1: coords = getCoords(bg_spriteEl_1);
+    const coordsBg_spriteEl_2: coords = getCoords(bg_spriteEl_2);
 
     animationId = requestAnimationFrame(startGame);
 
@@ -104,6 +115,7 @@ export function game(): void {
 
         animBullet = requestAnimationFrame(bulletLogic);
         animEnemy = requestAnimationFrame(enemyLogic);
+        animEnemyShoot = requestAnimationFrame(enemyBulletLogic);
 
         backgroundAnimation();
         animationId = requestAnimationFrame(startGame);
@@ -158,15 +170,30 @@ export function game(): void {
         enemyEl.setAttribute('src',
             `${enemyImg_1}`);
 
+        const enemyType = String(Math.round(randomNumberBetween(1, 3)));
+        enemyEl.setAttribute('enemyType', '2');
+
+        const direction = String(Math.round(randomNumberBetween(0, 1)));
+        enemyEl.setAttribute('enemyDirection', direction)
+
         roadEl?.appendChild(enemyEl);
         const enemy: elObj = createElementObject(enemyEl);
 
-        const enemyX: number = randomNumberBetween(-(road.width + info.width) / 2,(road.width + info.width) / 2 - info.width - enemy.width);
-        const enemyY: number = randomNumberBetween(-enemy.height * 6, -enemy.height * 2);
+        const enemyY: number = 0;
+
+        if (enemyType == '2') {
+            const enemyY: number = -enemy.height;
+        }
+        else {
+            const enemyY: number = randomNumberBetween(-enemy.height * 6, -enemy.height * 2);
+        }
+
+        const enemyX: number = randomNumberBetween(-(road.width + info.width) / 2, (road.width + info.width) / 2 - info.width - enemy.width);
+
         enemyEl.setAttribute('style',
             `transform: translate(${enemyX}px, ${enemyY}px)`);
     }
-    // road.width + info.width) / 2) - info.width - player.width
+
 
     function backgroundAnimation(): void {
         let newCoordY_stars_1_1: number = coordsStars_1_1.y + speed / 3;
@@ -174,10 +201,10 @@ export function game(): void {
         let newCoordY_stars_1_2: number = coordsStars_1_2.y + speed / 3;
         let newCoordY_stars_2_2: number = coordsStars_2_2.y + speed / 6;
 
-        let newCoordX_Bg_sprite_1: number = coordsBg_sprite_1.x;
-        let newCoordX_Bg_sprite_2: number = coordsBg_sprite_2.x;
-        let newCoordY_Bg_sprite_1: number = coordsBg_sprite_1.y + speed / 4;
-        let newCoordY_Bg_sprite_2: number = coordsBg_sprite_2.y + speed / 2;
+        let newCoordX_bg_spriteEl_1: number = coordsBg_spriteEl_1.x;
+        let newCoordX_bg_spriteEl_2: number = coordsBg_spriteEl_2.x;
+        let newCoordY_bg_spriteEl_1: number = coordsBg_spriteEl_1.y + speed / 4;
+        let newCoordY_bg_spriteEl_2: number = coordsBg_spriteEl_2.y + speed / 2;
 
         if (newCoordY_stars_1_1 > window.innerHeight) {
             const height: any = stars_1_1.clientHeight + navEl.clientHeight;
@@ -199,36 +226,20 @@ export function game(): void {
             newCoordY_stars_2_2 = -parseFloat(height);
         }
 
-        if (newCoordY_Bg_sprite_1 > window.innerHeight) {
-            const heightCoef: number = randomNumberBetween(2, 10);
-            const widthCoef: number = randomNumberBetween(-0.5, 0.2);
+        if (newCoordY_bg_spriteEl_1 > window.innerHeight) {
+            const width: number = randomNumberBetween(-road.width / 2, road.width / 2 - bg_sprite_1.width);
+            const height: number = randomNumberBetween(-bg_sprite_1.height * 2, -bg_sprite_1.height * 10);
 
-            let offset: number = 0;
-            if (widthCoef >= -0.1) {
-                offset = bg_sprite_1.clientWidth / 2;
-            }
-
-            const height: any = heightCoef * navEl.clientHeight;
-            const width: any = widthCoef * navEl.clientWidth - offset;
-
-            newCoordX_Bg_sprite_1 = parseFloat(width);
-            newCoordY_Bg_sprite_1 = -parseFloat(height);
+            newCoordX_bg_spriteEl_1 = width;
+            newCoordY_bg_spriteEl_1 = height;
         }
 
-        if (newCoordY_Bg_sprite_2 > window.innerHeight) {
-            const heightCoef: number = randomNumberBetween(2, 10);
-            const widthCoef: number = randomNumberBetween(-0.5, 0.5);
+        if (newCoordY_bg_spriteEl_2 > window.innerHeight) {
+            const width: number = randomNumberBetween(-road.width / 2, road.width / 2 - bg_sprite_2.width);
+            const height: number = randomNumberBetween(-bg_sprite_2.height * 2, -bg_sprite_2.height * 10);
 
-            let offset: number = 0;
-            if (widthCoef > 0) {
-                offset = bg_sprite_2.clientWidth;
-            }
-
-            const height: any = heightCoef * navEl.clientHeight;
-            const width: any = widthCoef * navEl.clientWidth - offset;
-
-            newCoordX_Bg_sprite_2 = parseFloat(width);
-            newCoordY_Bg_sprite_2 = -parseFloat(height);
+            newCoordX_bg_spriteEl_2 = width;
+            newCoordY_bg_spriteEl_2 = height;
         }
 
         coordsStars_1_1.y = newCoordY_stars_1_1;
@@ -236,10 +247,10 @@ export function game(): void {
         coordsStars_1_2.y = newCoordY_stars_1_2;
         coordsStars_2_2.y = newCoordY_stars_2_2;
 
-        coordsBg_sprite_1.x = newCoordX_Bg_sprite_1;
-        coordsBg_sprite_2.x = newCoordX_Bg_sprite_2;
-        coordsBg_sprite_1.y = newCoordY_Bg_sprite_1;
-        coordsBg_sprite_2.y = newCoordY_Bg_sprite_2;
+        coordsBg_spriteEl_1.x = newCoordX_bg_spriteEl_1;
+        coordsBg_spriteEl_2.x = newCoordX_bg_spriteEl_2;
+        coordsBg_spriteEl_1.y = newCoordY_bg_spriteEl_1;
+        coordsBg_spriteEl_2.y = newCoordY_bg_spriteEl_2;
 
         stars_1_1.setAttribute('style',
             `transform: translate(${coordsStars_1_1.x}px, ${newCoordY_stars_1_1}px)`);
@@ -250,10 +261,10 @@ export function game(): void {
         stars_2_2.setAttribute('style',
             `transform: translate(${coordsStars_2_2.x}px, ${newCoordY_stars_2_2}px)`);
 
-        bg_sprite_1.setAttribute('style',
-            `transform: translate(${newCoordX_Bg_sprite_1}px, ${newCoordY_Bg_sprite_1}px)`);
-        bg_sprite_2.setAttribute('style',
-            `transform: translate(${newCoordX_Bg_sprite_2}px, ${newCoordY_Bg_sprite_2}px)`);
+        bg_spriteEl_1.setAttribute('style',
+            `transform: translate(${newCoordX_bg_spriteEl_1}px, ${newCoordY_bg_spriteEl_1}px)`);
+        bg_spriteEl_2.setAttribute('style',
+            `transform: translate(${newCoordX_bg_spriteEl_2}px, ${newCoordY_bg_spriteEl_2}px)`);
     }
 
     function bulletLogic(): void {
@@ -264,7 +275,7 @@ export function game(): void {
 
             bullet.coords.y -= 10;
 
-            if (bullet.coords.y < -10) {
+            if (bullet.coords.y < -10 || isDead) {
                 roadEl?.removeChild(bulletEl);
                 continue;
             }
@@ -274,17 +285,74 @@ export function game(): void {
         }
     }
 
+    function enemyBulletLogic(): void {
+        const enemyBullets: NodeListOf<Element> = document.querySelectorAll('.enemy_bullet');
+        for (let i: number = 0; i < enemyBullets.length; i++) {
+            const enemyBulletEl: Element = enemyBullets[i];
+            const enemyBullet: elObj = createElementObject(enemyBulletEl);
+
+            enemyBullet.coords.y += 4;
+            enemyBullet.coords.x += 4;
+
+            if (enemyBullet.coords.y > road.height ||
+                enemyBullet.coords.x > (((road.width + info.width) / 2) - info.width) ||
+                enemyBullet.coords.x < -(road.width + info.width) / 2 ||
+                isDead) {
+                roadEl?.removeChild(enemyBulletEl);
+                continue;
+            }
+
+            enemyBulletEl.setAttribute('style',
+            `transform: translate(${enemyBullet.coords.x}px, ${enemyBullet.coords.y}px)`);
+        }
+    }
+
     function enemyLogic(): void {
         const enemies: NodeListOf<Element> = document.querySelectorAll('.enemy');
         for (let i: number = 0; i < enemies.length; i++) {
             const enemyEl: Element = enemies[i];
             const enemy: elObj = createElementObject(enemyEl);
+            const enemyType = enemyEl.getAttribute('enemyType');
+            const enemyDirection = enemyEl.getAttribute('enemyDirection');
 
-            enemy.coords.y += 3;
+            if (enemyType == '1') {
+                enemy.coords.y += 5;
+            }
+            else if (enemyType == '2') {
+                enemy.coords.y += Math.round(randomNumberBetween(-2, 5));
+                enemy.coords.x += Math.round(randomNumberBetween(-5, 5));
+
+                // animEnemyShoot = requestAnimationFrame(enemyShoot);
+                // shootInterval = setInterval((): void => {
+                //     animEnemyShoot = requestAnimationFrame(enemyShoot);
+                // }, 500);
+            }
+            else if (enemyType == '3') {
+                enemy.coords.y += 3;
+                if (enemyDirection == '1') {
+                    enemy.coords.x -= 4;
+                }
+                else {
+                    enemy.coords.x += 4;
+                }
+            }
+
 
             if (enemy.coords.y > road.height + 10) {
                 roadEl?.removeChild(enemyEl);
                 continue;
+            }
+
+            if (enemy.coords.x < -(road.width + info.width) / 2) {
+                if (enemyType == '3') {
+                    enemyEl.setAttribute('enemyDirection', '0');
+                }
+            }
+
+            if (enemy.coords.x > ((road.width + info.width) / 2) - info.width - enemy.width) {
+                if (enemyType == '3') {
+                    enemyEl.setAttribute('enemyDirection', '1');
+                }
             }
 
             enemyEl.setAttribute('style',
@@ -328,7 +396,8 @@ export function game(): void {
                 if (lives == 0) {
                     isDead = true;
                     stopGame();
-                    gameOver.setAttribute('style', 'display: initial');
+                    roadEl?.removeChild(enemyEl);
+                    gameOverEl.setAttribute('style', 'display: initial');
 
                     fetch('http://127.0.0.1:8000/api/scoreboard/create/', {
                           method: 'POST',
@@ -345,6 +414,11 @@ export function game(): void {
                     .then(score => {
                         console.log(score);
                     });
+
+                    yourScoreEl.innerHTML = String(score)
+                    if (Number(hiscoreEl.innerHTML) < score) {
+                        newRecordEl.setAttribute('style', 'display: initial');
+                    }
                 }
 
                 livesEl.innerHTML = livesStr;
@@ -361,6 +435,15 @@ export function game(): void {
                     score += Math.round((road.height - enemy.coords.y) * 10);
                     scoreEl.innerHTML = `${score}`;
                 }
+            }
+
+            function enemyShoot(): void {
+                const enemyBullet: HTMLDivElement = document.createElement('div');
+                enemyBullet.setAttribute('class', 'enemy_bullet')
+                enemyBullet.setAttribute('style',
+                    `transform: translate(${enemy.coords.x + enemy.width / 2 }px, ${enemy.coords.y }px)`);
+
+                roadEl?.appendChild(enemyBullet);
             }
         }
     }
@@ -479,30 +562,31 @@ export function game(): void {
         isWorking = !(document.hidden || window.onblur);
         if (!isWorking && !isDead) {
             stopGame();
-            pauseButton.children[0].setAttribute('style', 'display: none');
-            pauseButton.children[1].setAttribute('style', 'display: initial');
+            pauseButtonEl.children[0].setAttribute('style', 'display: none');
+            pauseButtonEl.children[1].setAttribute('style', 'display: initial');
             isPause = !isPause;
         }
     });
 
-    const pauseButton: Element = document.querySelector('#pause_button')!;
-    pauseButton.addEventListener('click', () => {
+    pauseButtonEl.addEventListener('click', () => {
         isPause = !isPause;
         if (isPause && !isDead) {
             stopGame();
-            pauseButton.children[0].setAttribute('style', 'display: none');
-            pauseButton.children[1].setAttribute('style', 'display: initial');
+            pauseButtonEl.children[0].setAttribute('style', 'display: none');
+            pauseButtonEl.children[1].setAttribute('style', 'display: initial');
         } else {
             launchGame();
-            pauseButton.children[1].setAttribute('style', 'display: none');
-            pauseButton.children[0].setAttribute('style', 'display: initial');
+            pauseButtonEl.children[1].setAttribute('style', 'display: none');
+            pauseButtonEl.children[0].setAttribute('style', 'display: initial');
         }
     })
 
     const retryButton: Element = document.querySelector('#retry_button')!;
     retryButton.addEventListener('click', () => {
-        gameOver.setAttribute('style', 'display: none');
+        gameOverEl.setAttribute('style', 'display: none');
+        newRecordEl.setAttribute('style', 'display: none');
         score = 0;
+        scoreEl.innerHTML = '0';
         lives = 3;
         livesEl.innerHTML = '&lt3 &lt3 &lt3';
         isDead = false;
@@ -519,6 +603,7 @@ export function game(): void {
         cancelAnimationFrame(player.moveDirection.right);
         cancelAnimationFrame(animSpawnEnemy);
         cancelAnimationFrame(animShoot);
+        cancelAnimationFrame(animEnemyShoot);
         cancelAnimationFrame(animBullet);
         cancelAnimationFrame(animEnemy);
         clearInterval(enemyInterval);

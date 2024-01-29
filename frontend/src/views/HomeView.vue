@@ -31,16 +31,15 @@
 </template>
 <style>
 table{
+  margin-left: auto;
+  margin-right: auto;
   border: 1px solid #CDB1ED;
-  text-align: center;
 }
 th{
   border: 1px solid #CDB1ED;
-  text-align: center;
 }
 td{
   border: 1px solid #CDB1ED;
-  text-align: center;
 }
 .home{
   text-align: center;
