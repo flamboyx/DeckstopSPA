@@ -58,6 +58,9 @@ export function game(): void {
     const roadEl: Element = document.querySelector('#road')!;
     const road: elObj = createElementObject(roadEl);
 
+    const infoEl: Element = document.querySelector('#info')!;
+    const info: elObj = createElementObject(infoEl);
+
     const playerEl: Element = document.querySelector('#player')!;
     const player: player = {
         ...createElementObject(playerEl),
@@ -158,11 +161,12 @@ export function game(): void {
         roadEl?.appendChild(enemyEl);
         const enemy: elObj = createElementObject(enemyEl);
 
-        const enemyX: number = randomNumberBetween(-road.width, -enemy.width);
+        const enemyX: number = randomNumberBetween(-(road.width + info.width) / 2,(road.width + info.width) / 2 - info.width - enemy.width);
         const enemyY: number = randomNumberBetween(-enemy.height * 6, -enemy.height * 2);
         enemyEl.setAttribute('style',
             `transform: translate(${enemyX}px, ${enemyY}px)`);
     }
+    // road.width + info.width) / 2) - info.width - player.width
 
     function backgroundAnimation(): void {
         let newCoordY_stars_1_1: number = coordsStars_1_1.y + speed / 3;
@@ -385,7 +389,7 @@ export function game(): void {
 
     function playerMoveLeft(): void {
         const newX: number = player.coords.x - speed;
-        if (newX < -road.width) {
+        if (newX < -(road.width + info.width) / 2) {
             return;
         }
 
@@ -396,7 +400,7 @@ export function game(): void {
 
     function playerMoveRight(): void {
         const newX: number = player.coords.x + speed;
-        if (newX > -player.width) {
+        if (newX > ((road.width + info.width) / 2) - info.width - player.width) {
             return;
         }
 

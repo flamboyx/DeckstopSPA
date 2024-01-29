@@ -21,7 +21,15 @@
     </form>
   </div>
 </template>
-
+<style>
+button{
+    background: #CDB1ED;
+    width: 300px;
+    height: 100px;
+    font-size: 28px;
+    font-weight: bold;
+}
+</style>
 <script>
 import axios from 'axios'
 import router from "@/router";

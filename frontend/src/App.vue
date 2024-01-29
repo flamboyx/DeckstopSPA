@@ -43,30 +43,33 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #CDB1ED;
+  background: #19061F;
 }
 
 body {
     display: flex;
     justify-content: center;
     margin: 0;
-    background: white;
+    background: #19061F;
     overflow: hidden;
+  text-align: center;
 }
 
 nav {
-  background: white;
+  background: none;
   z-index: 1;
   position: sticky;
   width: 440px;
   padding: 30px;
+  border: 5px solid #CDB1ED;
 
   a {
     font-weight: bold;
-    color: #2c3e50;
+    color: #CDB1ED;
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: #714988;
     }
   }
 }
