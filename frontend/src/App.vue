@@ -38,8 +38,12 @@
 </script>
 
 <style lang="scss">
+@font-face {
+    font-family: 'big';
+    src: url(fonts/ru.ttf);
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: big;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

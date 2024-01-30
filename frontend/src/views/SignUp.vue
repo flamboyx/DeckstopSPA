@@ -22,7 +22,12 @@
   </div>
 </template>
 <style>
+@font-face {
+    font-family: 'big';
+    src: url(../fonts/ru.ttf);
+}
 button{
+   font-family: big;
     background: #CDB1ED;
     width: 300px;
     height: 100px;
