@@ -390,7 +390,7 @@ export function game(): void {
                 lives--;
                 let livesStr: string = ''
                 for (let j: number = 1; j <= lives; j++) {
-                    livesStr += '&lt3 '
+                    livesStr += '&#9825 '
                 }
 
                 if (lives == 0) {
@@ -588,7 +588,7 @@ export function game(): void {
         score = 0;
         scoreEl.innerHTML = '0';
         lives = 3;
-        livesEl.innerHTML = '&lt3 &lt3 &lt3';
+        livesEl.innerHTML = '&#9825 &#9825 &#9825';
         isDead = false;
         middle = false;
         beginning = true;

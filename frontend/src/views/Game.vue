@@ -18,7 +18,7 @@
       <h1>HiScore <i><b id="hiscore">{{ hiscore }}</b></i></h1>
       <h1>Score <i><b id="score"></b></i></h1>
       <br>
-      <h1>Life <b id="lives">&lt3 &lt3 &lt3</b></h1>
+      <h1>Life <b id="lives">&#9825 &#9825 &#9825</b></h1>
 <!--      <h1>Ability </h1>-->
       <br>
 <!--      <h1>Power </h1>-->
