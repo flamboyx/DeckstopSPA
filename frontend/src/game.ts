@@ -171,7 +171,7 @@ export function game(): void {
             `${enemyImg_1}`);
 
         const enemyType = String(Math.round(randomNumberBetween(1, 3)));
-        enemyEl.setAttribute('enemyType', '2');
+        enemyEl.setAttribute('enemyType', enemyType);
 
         const direction = String(Math.round(randomNumberBetween(0, 1)));
         enemyEl.setAttribute('enemyDirection', direction)
