@@ -14,6 +14,7 @@
         <img id="play" src="../images/play.png">
       </button>
     </div>
+    <div id="under_road"></div>
     <div id="info">
       <h1>HiScore <i><b id="hiscore">{{ hiscore }}</b></i></h1>
       <h1>Score <i><b id="score"></b></i></h1>

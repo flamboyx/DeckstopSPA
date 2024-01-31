@@ -107,7 +107,7 @@ export function game(): void {
             beginning = false;
             middle = true;
         } else if (middle) {
-            enemyInterval = setInterval((): void => {
+            enemyInterval = window.setInterval((): void => {
                 animSpawnEnemy = requestAnimationFrame(spawnEnemy);
                 }, 5000);
             middle = false;
@@ -206,27 +206,27 @@ export function game(): void {
         let newCoordY_bg_spriteEl_1: number = coordsBg_spriteEl_1.y + speed / 4;
         let newCoordY_bg_spriteEl_2: number = coordsBg_spriteEl_2.y + speed / 2;
 
-        if (newCoordY_stars_1_1 > window.innerHeight) {
+        if (newCoordY_stars_1_1 > road.height) {
             const height: any = stars_1_1.clientHeight + navEl.clientHeight;
             newCoordY_stars_1_1 = -parseFloat(height);
         }
 
-        if (newCoordY_stars_2_1 > window.innerHeight) {
+        if (newCoordY_stars_2_1 > road.height) {
             const height: any = stars_2_1.clientHeight + navEl.clientHeight;
             newCoordY_stars_2_1 = -parseFloat(height);
         }
 
-        if (newCoordY_stars_1_2 > window.innerHeight) {
+        if (newCoordY_stars_1_2 > road.height) {
             const height: any = stars_1_2.clientHeight + navEl.clientHeight;
             newCoordY_stars_1_2 = -parseFloat(height);
         }
 
-        if (newCoordY_stars_2_2 > window.innerHeight) {
+        if (newCoordY_stars_2_2 > road.height) {
             const height: any = stars_2_2.clientHeight + navEl.clientHeight;
             newCoordY_stars_2_2 = -parseFloat(height);
         }
 
-        if (newCoordY_bg_spriteEl_1 > window.innerHeight) {
+        if (newCoordY_bg_spriteEl_1 > road.height) {
             const width: number = randomNumberBetween(-road.width / 2, road.width / 2 - bg_sprite_1.width);
             const height: number = randomNumberBetween(-bg_sprite_1.height * 2, -bg_sprite_1.height * 10);
 
@@ -234,7 +234,7 @@ export function game(): void {
             newCoordY_bg_spriteEl_1 = height;
         }
 
-        if (newCoordY_bg_spriteEl_2 > window.innerHeight) {
+        if (newCoordY_bg_spriteEl_2 > road.height) {
             const width: number = randomNumberBetween(-road.width / 2, road.width / 2 - bg_sprite_2.width);
             const height: number = randomNumberBetween(-bg_sprite_2.height * 2, -bg_sprite_2.height * 10);
 
@@ -526,7 +526,7 @@ export function game(): void {
         if (code === 'Space') {
             if (!isShooting) {
                 animShoot = requestAnimationFrame(playerShoot);
-                shootInterval = setInterval((): void => {
+                shootInterval = window.setInterval((): void => {
                 animShoot = requestAnimationFrame(playerShoot);
                 }, 100);
                 isShooting = true;
@@ -611,7 +611,7 @@ export function game(): void {
 
     function launchGame(): void {
         startGame()
-            enemyInterval = setInterval((): void => {
+            enemyInterval = window.setInterval((): void => {
                 animSpawnEnemy = requestAnimationFrame(spawnEnemy);
                 }, 5000);
     }

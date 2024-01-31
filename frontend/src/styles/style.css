@@ -7,8 +7,8 @@
 }
 
 #road {
-    width: 500px;
-    height: 90vh;
+    width: 400px;
+    height: 805px;
     bottom: 0;
     background: #19061F;
     border-left: 5px solid #CDB1ED;
@@ -17,10 +17,20 @@
     /*align: center;*/
 }
 
+#under_road {
+    position: absolute;
+    top: 886px;
+    border-top: 5px solid #CDB1ED;
+    height: 800px;
+    width: 400px;
+    background: #19061F;
+    transform: translateX(-150px);
+}
+
 #player {
     position: absolute;
     width: 60px;
-    transform: translate(-270px, 75vh);
+    transform: translate(-180px, 600px);
     /*border: 1px solid green;*/
     left: 50%;
     right: 50%;
@@ -59,24 +69,24 @@
 
 .stars_1 {
     position: absolute;
-    width: 500px;
+    width: 400px;
     transform: translate(-50%, 0%);
 }
 
 .stars_2 {
     position: absolute;
-    width: 500px;
+    width: 400px;
     transform: translate(-50%, -100%);
 }
 
 .nebula_1 {
     transform: translate(-10vh, 10vh);
-    width: 300px;
+    width: 250px;
 }
 
 .nebula_2 {
     transform: translate(2vh, 35vh);
-    width: 200px;
+    width: 150px;
 }
 
 #pause_button {
