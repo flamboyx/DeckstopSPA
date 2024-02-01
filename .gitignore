@@ -193,3 +193,4 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+*/dist_electron/
